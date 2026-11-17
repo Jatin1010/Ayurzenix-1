@@ -1,0 +1,18 @@
+export const FEATURE_PRICES: Record<string, number> = {
+  smart_scan: 0,
+  body_scan: 0,
+  face_glow: 0,
+  future_predictor: 0,
+  weight_loss: 0,
+  stress_relief: 0,
+  better_sleep: 0,
+  daily_routine: 0,
+  mood_ayurveda: 0,
+  chat: 0,
+  hormonal_balance: 0,
+  hair_fall: 0,
+  energy_booster: 0,
+  gut_health: 0,
+  liver_health: 0,
+  heart_health: 0,
+};

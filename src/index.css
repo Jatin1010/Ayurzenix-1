@@ -1,0 +1,218 @@
+@import "tailwindcss";
+
+@layer base {
+  * {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply text-slate-900;
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11", "ss01";
+    background: linear-gradient(135deg, #F8FFFC 0%, #EFF6FF 50%, #F5F3FF 100%);
+    background-attachment: fixed;
+    overscroll-behavior-y: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  img {
+    image-rendering: -webkit-optimize-contrast;
+    backface-visibility: hidden;
+  }
+}
+
+@layer utilities {
+  .gpu-accelerated {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+    will-change: transform, opacity;
+    -webkit-perspective: 1000;
+    -webkit-backface-visibility: hidden;
+  }
+
+  .sharp-card {
+    -webkit-font-smoothing: subpixel-antialiased;
+    transform: translateZ(0);
+  }
+}
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Sora", sans-serif;
+  --font-heading: "Outfit", sans-serif;
+
+  --color-ayur-primary: #10B981;
+  --color-ayur-secondary: #8B5CF6;
+  --color-ayur-accent: #38BDF8;
+  --color-ayur-teal: #14B8A6;
+  --color-ayur-green: #10B981;
+  --color-ayur-neon: #CCFF00;
+  --color-ayur-neon-dim: rgba(204, 255, 0, 0.15);
+  --color-ayur-bg-start: #F8FFFC;
+  --color-ayur-bg-mid: #EFF6FF;
+  --color-ayur-bg-end: #F5F3FF;
+  
+  --color-text-primary: #0F172A;
+  --color-text-secondary: #475569;
+
+  --shadow-premium: 0 20px 40px -15px rgba(0, 0, 0, 0.05);
+  --shadow-glass: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+  --shadow-luxury: 0 10px 30px -5px rgba(0, 0, 0, 0.03), 0 0 0 1px rgba(0, 0, 0, 0.01);
+  
+  --animate-shimmer: shimmer 2s linear infinite;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-pulse-slow: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  --animate-aura: aura 10s ease-in-out infinite;
+
+  @keyframes shimmer {
+    from { background-position: 200% center; }
+    to { background-position: -200% center; }
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-15px); }
+  }
+
+  @keyframes aura {
+    0%, 100% { opacity: 0.5; transform: scale(1); }
+    50% { opacity: 0.8; transform: scale(1.1); }
+  }
+}
+
+@layer base {
+  :root {
+    --sat: env(safe-area-inset-top);
+    --sar: env(safe-area-inset-right);
+    --sab: env(safe-area-inset-bottom);
+    --sal: env(safe-area-inset-left);
+  }
+
+  body {
+    @apply font-sans;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading tracking-tight text-text-primary font-semibold;
+    letter-spacing: -0.02em;
+  }
+  svg {
+    image-rendering: optimizeQuality;
+    shape-rendering: geometricPrecision;
+  }
+
+  .sharp-text {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: geometricPrecision;
+  }
+}
+
+@layer components {
+  .text-black-shiny {
+    @apply text-[#000000] drop-shadow-[0_1.5px_1.5px_rgba(0,0,0,0.08)];
+    @apply font-black tracking-tighter;
+  }
+
+  .glass-card {
+    @apply bg-white/75 backdrop-blur-[18px] border border-white/60 rounded-[2.5rem] shadow-glass transition-all duration-500;
+    -webkit-backdrop-filter: blur(18px);
+    -webkit-font-smoothing: subpixel-antialiased;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+    will-change: transform, opacity;
+  }
+
+  .luxury-glass {
+    @apply bg-white/40 backdrop-blur-2xl border border-white/50 rounded-[2.5rem] shadow-premium transition-all duration-500;
+    -webkit-backdrop-filter: blur(20px);
+  }
+
+  .luxury-glass-dark {
+    @apply bg-black/40 backdrop-blur-3xl border border-white/10 rounded-[2.5rem] transition-all duration-500;
+    -webkit-backdrop-filter: blur(30px);
+  }
+  
+  .luxury-glass-button {
+    @apply bg-white/60 backdrop-blur-xl border border-white/40 rounded-2xl shadow-sm hover:shadow-md transition-all active:scale-[0.98];
+    -webkit-backdrop-filter: blur(15px);
+  }
+
+  .shadow-glow-green {
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+  }
+
+  .shadow-glow-red {
+    box-shadow: 0 0 20px rgba(244, 63, 94, 0.4);
+  }
+    
+  .premium-gradient-text {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-ayur-primary via-ayur-secondary to-ayur-accent;
+  }
+
+  .neon-flash-text {
+    background: linear-gradient(90deg, #00BFA6, #4A90E2, #7B61FF);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    position: relative;
+    -webkit-mask-image: linear-gradient(90deg, #000 25%, rgba(0,0,0,0.5) 50%, #000 75%);
+    -webkit-mask-size: 200% 100%;
+    animation: shine 3s infinite linear;
+  }
+
+  @keyframes shine {
+    0% { -webkit-mask-position: 200% 0; }
+    100% { -webkit-mask-position: -200% 0; }
+  }
+
+  .mirror-shine-gradient {
+    background: linear-gradient(
+      110deg,
+      var(--color-ayur-primary) 0%,
+      var(--color-ayur-primary) 35%,
+      #ffffff 50%,
+      var(--color-ayur-primary) 65%,
+      var(--color-ayur-accent) 100%
+    );
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: mirror-shine-text 3s linear infinite;
+  }
+
+  @keyframes mirror-shine-text {
+    from { background-position: -100% center; }
+    to { background-position: 100% center; }
+  }
+
+  .premium-btn {
+    @apply px-8 py-4 rounded-full font-bold transition-all duration-300 active:scale-95 flex items-center justify-center gap-3 shadow-lg;
+  }
+
+  .btn-primary {
+    @apply bg-ayur-primary text-white hover:brightness-110 shadow-ayur-primary/20;
+  }
+
+  .btn-secondary {
+    @apply bg-white text-ayur-primary hover:bg-slate-50 border border-slate-200 shadow-sm;
+  }
+
+  .section-container {
+    @apply max-w-7xl mx-auto px-6 py-16 lg:py-24;
+  }
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

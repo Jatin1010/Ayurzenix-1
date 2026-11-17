@@ -1,0 +1,6 @@
+{
+  "name": "Ayurzenix",
+  "description": "Ayurzenix – India's First Adaptive AI Ayurveda Intelligence Engine. A professional-grade platform synthesizing ancient Vedic wisdom with modern biological computation, featuring dynamic AI intelligence management for uninterrupted wellness insights.",
+  "requestFramePermissions": ["camera", "microphone", "geolocation", "identity-credentials-get"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

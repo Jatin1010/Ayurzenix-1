@@ -1,0 +1,340 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile and subscription information",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "phone": { "type": "string" },
+        "loginType": { "type": "string", "enum": ["phone", "google", "email"] },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "language": { "type": "string", "enum": ["en", "hi"] },
+        "free_results_count": { "type": "number" },
+        "plan": { "type": "string", "enum": ["free", "premium"] },
+        "reports": { "type": "array" },
+        "wallet_balance": { "type": "number" },
+        "wellness_score": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "loginType", "plan", "createdAt"]
+    },
+    "HealthProfile": {
+      "title": "Health Profile",
+      "description": "User's health data and AI analysis results",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "type": { "type": "string", "enum": ["health_scan", "body_scan", "face_glow", "future_prediction"] },
+        "age": { "type": "number" },
+        "gender": { "type": "string" },
+        "lifestyle": { "type": "string" },
+        "currentSymptoms": { "type": "string" },
+        "analysis": { "type": "object" },
+        "image": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "type", "createdAt"]
+    },
+    "Transaction": {
+      "title": "Transaction",
+      "description": "Wallet recharge or analysis payment",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "amount": { "type": "number" },
+        "bonus": { "type": "number" },
+        "type": { "type": "string", "enum": ["credit", "debit"] },
+        "description": { "type": "string" },
+        "status": { "type": "string", "enum": ["success", "failed", "pending"] },
+        "method": { "type": "string", "enum": ["razorpay", "wallet", "razorpay_webhook"] },
+        "paymentId": { "type": "string" },
+        "orderId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "amount", "type", "description", "status", "createdAt"]
+    },
+    "UnlockedReport": {
+      "title": "Unlocked Report",
+      "description": "Tracking of reports unlocked via credits or premium",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "feature_name": { "type": "string" },
+        "plan_id": { "type": "string" },
+        "profile_id": { "type": "string" },
+        "unlocked_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "feature_name", "plan_id", "unlocked_at"]
+    },
+    "Subscription": {
+      "title": "Subscription",
+      "description": "User subscription details",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "plan_id": { "type": "string" },
+        "status": { "type": "string", "enum": ["active", "expired", "cancelled"] },
+        "startDate": { "type": "string", "format": "date-time" },
+        "expiryDate": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "plan_id", "status", "startDate", "expiryDate"]
+    },
+    "DailyRoutine": {
+      "title": "Daily Routine",
+      "description": "User's daily Ayurvedic routine and progress",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "date": { "type": "string", "format": "date" },
+        "progress": { "type": "number" },
+        "quiz": { "type": "array" },
+        "targets": { "type": "array" },
+        "tasks": { "type": "array" },
+        "streak": { "type": "number" },
+        "isCompleted": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "date", "progress", "streak", "createdAt"]
+    },
+    "DashboardStats": {
+      "title": "Dashboard Stats",
+      "description": "Aggregated analytics for admin dashboard",
+      "type": "object",
+      "properties": {
+        "total_users": { "type": "number" },
+        "active_users": { "type": "number" },
+        "total_scans": { "type": "number" },
+        "total_revenue": { "type": "number" },
+        "conversion_rate": { "type": "number" },
+        "daily_revenue": { "type": "object" },
+        "feature_usage": { "type": "object" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "AppConfig": {
+      "title": "App Config",
+      "description": "Remote configuration for app features and pricing",
+      "type": "object",
+      "properties": {
+        "features": { "type": "object" },
+        "pricing": { "type": "object" },
+        "maintenance_mode": { "type": "boolean" }
+      }
+    },
+    "ProductClick": {
+      "title": "Product Click",
+      "description": "Tracking user interest in products",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "productId": { "type": "string" },
+        "category": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "productId", "timestamp"]
+    },
+    "AppError": {
+      "title": "App Error",
+      "description": "Tracking app crashes and API errors",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "errorType": { "type": "string" },
+        "message": { "type": "string" },
+        "stack": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["errorType", "message", "timestamp"]
+    },
+    "HealthCondition": {
+      "title": "Health Condition",
+      "description": "Detailed database of Ayurvedic and Modern medical conditions",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "ayurvedicName": { "type": "string" },
+        "modernName": { "type": "string" },
+        "system": { "type": "string" },
+        "doshas": { "type": "array" },
+        "prognosis": { "type": "string" },
+        "symptoms": { "type": "array" },
+        "treatmentPrinciples": { "type": "string" },
+        "riskFactors": { "type": "array" },
+        "yogaRecommendations": { "type": "array" },
+        "herbsRecommended": { "type": "array" },
+        "dietRecommendations": { "type": "string" },
+        "complications": { "type": "array" },
+        "source": { "type": "string" }
+      },
+      "required": ["ayurvedicName", "modernName"]
+    },
+    "Herb": {
+      "title": "Ayurvedic Herb",
+      "description": "Herbal database for recommendations",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "tags": { "type": "array" },
+        "description": { "type": "string" },
+        "category": { "type": "string", "enum": ["energy", "skin", "stress", "sleep", "digestion", "general"] },
+        "dosage": { "type": "string" },
+        "contraindications": { "type": "array" }
+      },
+      "required": ["name", "category"]
+    },
+    "YogaPlan": {
+      "title": "Yoga Plan",
+      "description": "Specific yoga sequences for health conditions",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "conditionId": { "type": "string" },
+        "poses": { "type": "array" },
+        "duration": { "type": "string" },
+        "difficulty": { "type": "string", "enum": ["beginner", "intermediate", "advanced"] }
+      },
+      "required": ["title", "poses"]
+    },
+    "Blog": {
+      "title": "SEO Blog",
+      "description": "SEO optimized blogs for app features",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "featureName": { "type": "string" },
+        "content": {
+          "type": "object",
+          "properties": {
+            "introduction": { "type": "string" },
+            "howToUse": { "type": "array" },
+            "benefits": { "type": "array" },
+            "ayurvedaPros": { "type": "string" },
+            "uniqueness": { "type": "string" },
+            "tips": { "type": "array" },
+            "faqs": { "type": "array" }
+          }
+        },
+        "keywords": { "type": "array" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "featureName", "content"]
+    },
+    "AiConfig": {
+      "title": "AI Config",
+      "description": "Sensitive AI configuration and API keys",
+      "type": "object",
+      "properties": {
+        "gemini_api_key": { "type": "string" },
+        "active_model": { "type": "string", "enum": ["gemini-1.5-flash", "gemini-1.5-pro"] },
+        "maintenance_mode": { "type": "boolean" },
+        "broadcast_message": { "type": "string" },
+        "usage_total_requests": { "type": "number" },
+        "prompts": { 
+          "type": "object",
+          "description": "Dynamic prompts for different engine features"
+        },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "updatedBy": { "type": "string" }
+      }
+    },
+    "AdminLog": {
+      "title": "Admin Log",
+      "description": "Audit trail for sensitive system changes",
+      "type": "object",
+      "properties": {
+        "action": { "type": "string" },
+        "performedBy": { "type": "string" },
+        "details": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["action", "performedBy", "timestamp"]
+    },
+    "UserReport": {
+      "title": "User Health Report",
+      "description": "Comprehensive generated health reports for users",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "reportType": { "type": "string" },
+        "data": { "type": "object" },
+        "summary": { "type": "string" },
+        "PDFUrl": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "reportType", "timestamp"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profile data"
+    },
+    "/users/{userId}/daily_routines/{date}": {
+      "schema": "DailyRoutine",
+      "description": "User's daily routine progress"
+    },
+    "/health_profiles/{profileId}": {
+      "schema": "HealthProfile",
+      "description": "User health analysis history"
+    },
+    "/transactions/{transactionId}": {
+      "schema": "Transaction",
+      "description": "Wallet transaction history"
+    },
+    "/dashboard_stats/{docId}": {
+      "schema": "DashboardStats",
+      "description": "Analytics data for admin"
+    },
+    "/app_config/{docId}": {
+      "schema": "AppConfig",
+      "description": "App configuration settings"
+    },
+    "/product_clicks/{clickId}": {
+      "schema": "ProductClick",
+      "description": "Product interaction logs"
+    },
+    "/app_errors/{errorId}": {
+      "schema": "AppError",
+      "description": "Error and crash logs"
+    },
+    "/health_conditions/{conditionId}": {
+      "schema": "HealthCondition",
+      "description": "Master condition database"
+    },
+    "/herbs/{herbId}": {
+      "schema": "Herb",
+      "description": "Herbal ingredient database"
+    },
+    "/yoga_plans/{planId}": {
+      "schema": "YogaPlan",
+      "description": "Yoga therapeutic routines"
+    },
+    "/blogs/{blogId}": {
+      "schema": "Blog",
+      "description": "App SEO content"
+    },
+    "/user_reports/{reportId}": {
+      "schema": "UserReport",
+      "description": "Detailed user scan reports"
+    },
+    "/unlocked_reports/{unlockId}": {
+      "schema": "UnlockedReport",
+      "description": "Records of report access unlocks"
+    },
+    "/subscriptions/{subId}": {
+      "schema": "Subscription",
+      "description": "Premium user subscriptions"
+    },
+    "/system_config/{docId}": {
+      "schema": "AiConfig",
+      "description": "Sensitive system configurations"
+    },
+    "/admin_logs/{logId}": {
+      "schema": "AdminLog",
+      "description": "System audit trail"
+    }
+  }
+}

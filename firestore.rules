@@ -1,0 +1,189 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global Safety Net: Default Deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // internal connection test
+    match /test/{docId} {
+      allow read: if true;
+    }
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && 
+             'email' in request.auth.token && 
+             (request.auth.token.email.lower() == "help@ayurzenix.in" || 
+              request.auth.token.email.lower() == "jatin1978kumar@gmail.com");
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // ===============================================================
+    // Validation Blueprints
+    // ===============================================================
+
+    function isValidUser(data) {
+      let required = ['uid', 'loginType', 'plan', 'createdAt'];
+      return data.keys().hasAll(required) &&
+             data.uid == request.auth.uid &&
+             data.uid is string && data.uid.size() <= 128 &&
+             data.loginType in ['phone', 'google', 'email'] &&
+             data.plan in ['free', 'premium'] &&
+             (!('phone' in data) || (data.phone is string && data.phone.size() <= 32)) &&
+             (!('reports' in data) || (data.reports is list && data.reports.size() <= 1000));
+    }
+
+    function isSafeUserUpdate(data, prev) {
+      // Prevent user from updating sensitive fields directly
+      return data.plan == prev.get('plan', 'free') &&
+             data.wallet_balance == prev.get('wallet_balance', 0) &&
+             data.createdAt == prev.createdAt;
+    }
+
+    function isValidDailyRoutine(data) {
+      let required = ['uid', 'date', 'progress', 'streak', 'createdAt'];
+      return data.keys().hasAll(required) &&
+             data.uid == request.auth.uid &&
+             data.date is string &&
+             data.progress is number &&
+             data.streak is number;
+    }
+
+    function isValidHealthProfile(data) {
+      let required = ['uid', 'type', 'createdAt'];
+      return data.keys().hasAll(required) &&
+             data.uid == request.auth.uid &&
+             data.type is string;
+    }
+
+    function isValidTransaction(data) {
+      let required = ['uid', 'amount', 'type', 'status', 'createdAt'];
+      return data.keys().hasAll(required) &&
+             data.uid == request.auth.uid &&
+             data.amount is number &&
+             data.type in ['recharge', 'payment', 'deduction', 'subscription', 'credit', 'debit'] &&
+             data.status in ['pending', 'success', 'failed'] &&
+             data.createdAt == request.time;
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    // Public Reads
+    match /app_config/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /system_config/{docId} {
+      allow read, write: if isAdmin();
+    }
+
+    match /admin_logs/{logId} {
+      allow read, write: if isAdmin();
+    }
+
+    match /blogs/{blogId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /herbs/{herbId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /health_conditions/{conditionId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /yoga_plans/{planId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // User Data
+    match /users/{userId} {
+      allow read, get: if isSignedIn() && (request.auth.uid == userId || isAdmin());
+      allow list: if isSignedIn();
+      allow create: if isOwner(userId) && isValidUser(incoming()) && incoming().createdAt == request.time;
+      allow update: if (isOwner(userId) && isValidUser(incoming()) && isSafeUserUpdate(incoming(), existing())) || isAdmin();
+
+      match /daily_routines/{date} {
+        allow read: if isOwner(userId) || isAdmin();
+        allow create: if isOwner(userId) && isValidDailyRoutine(incoming()) && incoming().createdAt == request.time;
+        allow update: if isOwner(userId) && isValidDailyRoutine(incoming()) && incoming().uid == existing().uid;
+      }
+    }
+
+    match /health_profiles/{profileId} {
+      allow read: if isSignedIn() && (existing().uid == request.auth.uid || isAdmin());
+      allow create: if isSignedIn() && isValidHealthProfile(incoming()) && incoming().createdAt == request.time;
+      allow update: if isSignedIn() && existing().uid == request.auth.uid && incoming().uid == existing().uid;
+      allow delete: if isSignedIn() && existing().uid == request.auth.uid;
+    }
+
+    match /transactions/{transactionId} {
+      allow read, get, list: if isSignedIn() && (resource.data.uid == request.auth.uid || isAdmin());
+      allow write: if isAdmin();
+    }
+
+    match /unlocked_reports/{unlockId} {
+      allow read: if isSignedIn() && (existing().uid == request.auth.uid || isAdmin());
+      allow create: if isSignedIn() && incoming().uid == request.auth.uid;
+      allow update, delete: if isSignedIn() && existing().uid == request.auth.uid;
+      allow write: if isAdmin();
+    }
+
+    match /subscriptions/{subId} {
+      allow read: if isSignedIn() && (existing().uid == request.auth.uid || isAdmin());
+      allow write: if isAdmin();
+    }
+
+    match /user_reports/{reportId} {
+      allow read: if isSignedIn() && (existing().uid == request.auth.uid || isAdmin());
+      allow create: if isSignedIn() && incoming().uid == request.auth.uid;
+      allow update, delete: if isSignedIn() && existing().uid == request.auth.uid;
+      allow write: if isAdmin();
+    }
+
+    match /product_clicks/{clickId} {
+      allow create: if isSignedIn();
+      allow read, write: if isAdmin();
+    }
+
+    match /app_errors/{errorId} {
+      allow create: if true;
+      allow read, write: if isAdmin();
+    }
+
+    match /dashboard_stats/{docId} {
+      allow read, write: if isAdmin();
+    }
+  }
+}
